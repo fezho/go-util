@@ -4,6 +4,7 @@ Using this instead of other, simpler, queue implementations (slice+append or lin
 substantial memory and time benefits, and fewer GC pauses.
 The queue implemented here is as fast as it is for an additional reason: it is *not* thread-safe.
 */
+
 package queue
 
 // minQueueLen is smallest capacity that queue may have.
@@ -12,8 +13,10 @@ const minQueueLen = 16
 
 // Queue represents a single instance of the queue data structure.
 type Queue struct {
-	buf               []interface{}
-	head, tail, count int
+	buf   []interface{}
+	head  int
+	tail  int
+	count int
 }
 
 // New constructs and returns a new Queue.
@@ -63,6 +66,7 @@ func (q *Queue) Peek() interface{} {
 	if q.count <= 0 {
 		panic("queue: Peek() called on empty queue")
 	}
+
 	return q.buf[q.head]
 }
 
@@ -88,6 +92,7 @@ func (q *Queue) Remove() interface{} {
 	if q.count <= 0 {
 		panic("queue: Remove() called on empty queue")
 	}
+
 	ret := q.buf[q.head]
 	q.buf[q.head] = nil
 	// bitwise modulus
