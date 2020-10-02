@@ -4,12 +4,15 @@ Using this instead of other, simpler, queue implementations (slice+append or lin
 substantial memory and time benefits, and fewer GC pauses.
 The queue implemented here is as fast as it is for an additional reason: it is *not* thread-safe.
 */
-
 package queue
 
 // minQueueLen is smallest capacity that queue may have.
 // Must be power of 2 for bitwise modulus: x % n == x & (n - 1).
 const minQueueLen = 16
+
+
+// concurrent fifo
+// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/tools/cache/fifo.go
 
 // Queue represents a single instance of the queue data structure.
 type Queue struct {
@@ -31,7 +34,7 @@ func (q *Queue) Length() int {
 	return q.count
 }
 
-// resizes the queue to fit exactly twice its current contents
+// resize the queue to fit exactly twice its current contents
 // this can result in shrinking if the queue is less than half-full
 func (q *Queue) resize() {
 	newBuf := make([]interface{}, q.count<<1)
